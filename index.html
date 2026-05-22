@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Web Iframe Dinamik</title>
+    <style>
+        /* Tetapan asas */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR MENU --- */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            background-color: #1a252f;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .sidebar a {
+            padding: 15px 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            border-bottom: 1px solid #34495e;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #34495e;
+        }
+
+        /* --- KAWASAN KANDUNGAN UTAMA --- */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        /* --- TOP BAR --- */
+        .topbar {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #dee2e6;
+            height: 50px;
+            box-sizing: border-box;
+        }
+
+        .hamburger-btn {
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: none;
+            margin-right: 15px;
+            color: #333;
+        }
+
+        .topbar-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* --- IFRAME --- */
+        .iframe-container {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            background-color: #eaeded; /* Warna latar belakang sementara iframe loading */
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* --- RESPONSIVE MOBILE VIEW --- */
+        @media (max-width: 768px) {
+            .hamburger-btn {
+                display: block;
+            }
+            
+            .sidebar {
+                position: absolute;
+                height: 100%;
+                transform: translateX(-100%); 
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">Menu Sistem</div>
+        <a class="nav-link active" data-url="https://example.com" data-title="Laman Utama">Laman Utama</a>
+        <a class="nav-link" data-url="https://ms.wikipedia.org" data-title="Profil Pengguna">Profil</a>
+        <a class="nav-link" data-url="https://www.bing.com" data-title="Tetapan Sistem">Tetapan</a>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <button class="hamburger-btn" id="hamburger-btn">☰</button>
+            <span class="topbar-title" id="topbar-title">Laman Utama</span>
+        </div>
+
+        <div class="iframe-container">
+            <iframe id="main-iframe" src="https://example.com" title="Embedded Website"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const sidebar = document.getElementById('sidebar');
+        const iframe = document.getElementById('main-iframe');
+        const topbarTitle = document.getElementById('topbar-title');
+        const menuLinks = document.querySelectorAll('.nav-link');
+
+        // 1. Fungsi Buka/Tutup Hamburger Menu
+        hamburgerBtn.addEventListener('click', (event) => {
+            sidebar.classList.toggle('show');
+            event.stopPropagation();
+        });
+
+        // 2. Fungsi Tutup menu automatik bila klik luar sidebar (untuk mobile)
+        window.addEventListener('click', (event) => {
+            if (window.innerWidth <= 768) {
+                if (sidebar.classList.contains('show') && !sidebar.contains(event.target)) {
+                    sidebar.classList.remove('show');
+                }
+            }
+        });
+
+        // 3. Fungsi Navigasi Dinamik untuk Iframe
+        menuLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Ambil data dari atribut html
+                const newUrl = link.getAttribute('data-url');
+                const newTitle = link.getAttribute('data-title');
+
+                // Tukar URL Iframe dan Tajuk Topbar
+                if (newUrl) iframe.src = newUrl;
+                if (newTitle) topbarTitle.innerText = newTitle;
+
+                // Buang class 'active' dari semua menu, dan tambah pada menu yang ditekan
+                menuLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+
+                // Tutup sidebar secara automatik jika di mobile view
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('show');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
