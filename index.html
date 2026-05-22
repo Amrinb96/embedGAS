@@ -72,16 +72,15 @@
             background: none;
             border: none;
             cursor: pointer;
-            display: none; /* Disembunyikan di desktop */
+            display: none;
             width: 26px;
             height: 20px;
             position: relative;
             margin-right: 15px;
             padding: 0;
-            z-index: 1001; /* Pastikan ia berada di atas elemen lain */
+            z-index: 1001;
         }
 
-        /* Tiga garisan hamburger */
         .hamburger-btn .bar {
             position: absolute;
             left: 0;
@@ -92,35 +91,26 @@
             transition: all 0.3s ease-in-out;
         }
 
-        /* Kedudukan asal setiap garisan */
         .hamburger-btn .bar:nth-child(1) { top: 0; }
         .hamburger-btn .bar:nth-child(2) { top: 50%; transform: translateY(-50%); }
         .hamburger-btn .bar:nth-child(3) { bottom: 0; }
 
-        /* Keadaan apabila butang ditekan (Class 'open' ditambah oleh JS) */
-        .hamburger-btn.open .bar:nth-child(1) {
-            top: 50%;
-            transform: translateY(-50%) rotate(45deg);
-        }
-        .hamburger-btn.open .bar:nth-child(2) {
-            opacity: 0; /* Garisan tengah hilang */
-        }
-        .hamburger-btn.open .bar:nth-child(3) {
-            bottom: 50%;
-            transform: translateY(50%) rotate(-45deg);
-        }
+        .hamburger-btn.open .bar:nth-child(1) { top: 50%; transform: translateY(-50%) rotate(45deg); }
+        .hamburger-btn.open .bar:nth-child(2) { opacity: 0; }
+        .hamburger-btn.open .bar:nth-child(3) { bottom: 50%; transform: translateY(50%) rotate(-45deg); }
 
         .topbar-title {
             font-weight: bold;
             color: #333;
         }
 
-        /* --- IFRAME --- */
+        /* --- IFRAME & LOADER CONTAINER --- */
         .iframe-container {
             flex-grow: 1;
             width: 100%;
             height: 100%;
             background-color: #eaeded;
+            position: relative; /* Penting untuk loader berada di dalam kawasan ini sahaja */
         }
 
         iframe {
@@ -130,21 +120,47 @@
             display: block;
         }
 
+        /* --- CSS UNTUK SPINNING LOADER --- */
+        .loader-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(234, 237, 237, 0.9); /* Latar belakang separa lutsinar */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50; /* Memastikan ia berada di atas iframe */
+            transition: opacity 0.3s ease; /* Transisi lembut bila hilang */
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #bdc3c7; /* Warna bulatan asas */
+            border-top: 5px solid #3498db; /* Warna garisan yang berpusing (Biru) */
+            border-radius: 50%;
+            animation: spin 1s linear infinite; /* Pusingan tanpa henti */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Kelas untuk menyembunyikan loader apabila siap */
+        .hidden {
+            opacity: 0;
+            pointer-events: none; /* Memastikan klik menembusi ke iframe bila disembunyikan */
+            visibility: hidden;
+        }
+
         /* --- RESPONSIVE MOBILE VIEW --- */
         @media (max-width: 768px) {
-            .hamburger-btn {
-                display: block;
-            }
-            
-            .sidebar {
-                position: absolute;
-                height: 100%;
-                transform: translateX(-100%); 
-            }
-
-            .sidebar.show {
-                transform: translateX(0);
-            }
+            .hamburger-btn { display: block; }
+            .sidebar { position: absolute; height: 100%; transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
         }
     </style>
 </head>
@@ -168,6 +184,10 @@
         </div>
 
         <div class="iframe-container">
+            <div class="loader-overlay" id="loader">
+                <div class="spinner"></div>
+            </div>
+            
             <iframe id="main-iframe" src="https://script.google.com/macros/s/AKfycbzoy7ayiozPs_rhX8XeV_6P5ciRGJOa4KO4hgYxwu6f5FwikEUYoYXx2uZzgGGRly3ROg/exec" title="Embedded Website"></iframe>
         </div>
     </div>
@@ -178,31 +198,42 @@
         const iframe = document.getElementById('main-iframe');
         const topbarTitle = document.getElementById('topbar-title');
         const menuLinks = document.querySelectorAll('.nav-link');
+        const loader = document.getElementById('loader');
 
-        // 1. Fungsi Buka/Tutup Hamburger Menu & Animasi Butang
+        // 1. Fungsi Tutup Loader apabila iframe selesai memuatkan laman web
+        iframe.addEventListener('load', () => {
+            loader.classList.add('hidden');
+        });
+
+        // 2. Fungsi Buka/Tutup Hamburger Menu & Animasi Butang
         hamburgerBtn.addEventListener('click', (event) => {
             sidebar.classList.toggle('show');
-            hamburgerBtn.classList.toggle('open'); // Tukar kepada X atau sebaliknya
+            hamburgerBtn.classList.toggle('open');
             event.stopPropagation();
         });
 
-        // 2. Fungsi Tutup menu automatik bila klik luar sidebar (untuk mobile)
+        // 3. Fungsi Tutup menu automatik bila klik luar sidebar (untuk mobile)
         window.addEventListener('click', (event) => {
             if (window.innerWidth <= 768) {
                 if (sidebar.classList.contains('show') && !sidebar.contains(event.target)) {
                     sidebar.classList.remove('show');
-                    hamburgerBtn.classList.remove('open'); // Kembalikan X kepada hamburger
+                    hamburgerBtn.classList.remove('open');
                 }
             }
         });
 
-        // 3. Fungsi Navigasi Dinamik untuk Iframe
+        // 4. Fungsi Navigasi Dinamik untuk Iframe
         menuLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 const newUrl = link.getAttribute('data-url');
                 const newTitle = link.getAttribute('data-title');
 
-                if (newUrl) iframe.src = newUrl;
+                // Hanya paparkan loader dan tukar src jika URL berbeza dari yang sedia ada
+                if (newUrl && iframe.src !== newUrl) {
+                    loader.classList.remove('hidden'); // Paparkan semula loader
+                    iframe.src = newUrl;
+                }
+                
                 if (newTitle) topbarTitle.innerText = newTitle;
 
                 menuLinks.forEach(l => l.classList.remove('active'));
@@ -211,7 +242,7 @@
                 // Tutup sidebar secara automatik jika di mobile view
                 if (window.innerWidth <= 768) {
                     sidebar.classList.remove('show');
-                    hamburgerBtn.classList.remove('open'); // Kembalikan X kepada hamburger
+                    hamburgerBtn.classList.remove('open');
                 }
             });
         });
