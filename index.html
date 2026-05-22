@@ -67,14 +67,47 @@
             box-sizing: border-box;
         }
 
+        /* --- BUTANG HAMBURGER & ANIMASI X --- */
         .hamburger-btn {
-            font-size: 24px;
             background: none;
             border: none;
             cursor: pointer;
-            display: none;
+            display: none; /* Disembunyikan di desktop */
+            width: 26px;
+            height: 20px;
+            position: relative;
             margin-right: 15px;
-            color: #333;
+            padding: 0;
+            z-index: 1001; /* Pastikan ia berada di atas elemen lain */
+        }
+
+        /* Tiga garisan hamburger */
+        .hamburger-btn .bar {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #333;
+            border-radius: 3px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Kedudukan asal setiap garisan */
+        .hamburger-btn .bar:nth-child(1) { top: 0; }
+        .hamburger-btn .bar:nth-child(2) { top: 50%; transform: translateY(-50%); }
+        .hamburger-btn .bar:nth-child(3) { bottom: 0; }
+
+        /* Keadaan apabila butang ditekan (Class 'open' ditambah oleh JS) */
+        .hamburger-btn.open .bar:nth-child(1) {
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+        }
+        .hamburger-btn.open .bar:nth-child(2) {
+            opacity: 0; /* Garisan tengah hilang */
+        }
+        .hamburger-btn.open .bar:nth-child(3) {
+            bottom: 50%;
+            transform: translateY(50%) rotate(-45deg);
         }
 
         .topbar-title {
@@ -87,7 +120,7 @@
             flex-grow: 1;
             width: 100%;
             height: 100%;
-            background-color: #eaeded; /* Warna latar belakang sementara iframe loading */
+            background-color: #eaeded;
         }
 
         iframe {
@@ -125,12 +158,16 @@
 
     <div class="main-content">
         <div class="topbar">
-            <button class="hamburger-btn" id="hamburger-btn">☰</button>
+            <button class="hamburger-btn" id="hamburger-btn">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
             <span class="topbar-title" id="topbar-title">Laman Utama</span>
         </div>
 
         <div class="iframe-container">
-            <iframe id="main-iframe" src="https://example.com" title="Embedded Website"></iframe>
+            <iframe id="main-iframe" src="https://script.google.com/macros/s/AKfycbyyQytwWXbMmGb_oXXX5tKGVUUQwPJ1wdDPwZKRH5gO3ViRCMzgrwtZmKIfySrL7Hht/exec" title="Embedded Website"></iframe>
         </div>
     </div>
 
@@ -141,9 +178,10 @@
         const topbarTitle = document.getElementById('topbar-title');
         const menuLinks = document.querySelectorAll('.nav-link');
 
-        // 1. Fungsi Buka/Tutup Hamburger Menu
+        // 1. Fungsi Buka/Tutup Hamburger Menu & Animasi Butang
         hamburgerBtn.addEventListener('click', (event) => {
             sidebar.classList.toggle('show');
+            hamburgerBtn.classList.toggle('open'); // Tukar kepada X atau sebaliknya
             event.stopPropagation();
         });
 
@@ -152,6 +190,7 @@
             if (window.innerWidth <= 768) {
                 if (sidebar.classList.contains('show') && !sidebar.contains(event.target)) {
                     sidebar.classList.remove('show');
+                    hamburgerBtn.classList.remove('open'); // Kembalikan X kepada hamburger
                 }
             }
         });
@@ -159,21 +198,19 @@
         // 3. Fungsi Navigasi Dinamik untuk Iframe
         menuLinks.forEach(link => {
             link.addEventListener('click', (e) => {
-                // Ambil data dari atribut html
                 const newUrl = link.getAttribute('data-url');
                 const newTitle = link.getAttribute('data-title');
 
-                // Tukar URL Iframe dan Tajuk Topbar
                 if (newUrl) iframe.src = newUrl;
                 if (newTitle) topbarTitle.innerText = newTitle;
 
-                // Buang class 'active' dari semua menu, dan tambah pada menu yang ditekan
                 menuLinks.forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
 
                 // Tutup sidebar secara automatik jika di mobile view
                 if (window.innerWidth <= 768) {
                     sidebar.classList.remove('show');
+                    hamburgerBtn.classList.remove('open'); // Kembalikan X kepada hamburger
                 }
             });
         });
