@@ -18,13 +18,13 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
-            background-color: #f8fafc; /* Warna latar belakang kelabu sangat lembut */
+            background-color: #f8fafc;
         }
 
         /* --- SIDEBAR MENU --- */
         .sidebar {
             width: 260px;
-            background-color: #0f172a; /* Warna Slate 900 (Gelap Premium) */
+            background-color: #0f172a;
             color: #94a3b8;
             display: flex;
             flex-direction: column;
@@ -35,21 +35,43 @@
         }
 
         .sidebar-header {
-            padding: 24px 20px;
-            text-align: center;
-            background-color: #020617; /* Lebih gelap dari body sidebar */
+            padding: 20px;
+            display: flex;
+            justify-content: space-between; /* Asingkan teks kiri dan butang kanan */
+            align-items: center;
+            background-color: #020617;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .sidebar-title {
             color: #ffffff;
             font-weight: 700;
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             letter-spacing: 0.5px;
-            border-bottom: 1px solid #1e293b;
+        }
+
+        /* Butang Tutup (X) dalam Sidebar */
+        .close-sidebar-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            display: none; /* Sembunyi di desktop */
+            transition: all 0.2s ease;
+        }
+
+        .close-sidebar-btn:hover {
+            background-color: #1e293b;
+            color: #ef4444; /* Warna merah lembut bila hover */
         }
 
         .sidebar-menu {
             padding: 15px 10px;
             display: flex;
             flex-direction: column;
-            gap: 5px; /* Jarak antara butang menu */
+            gap: 5px;
         }
 
         .sidebar a {
@@ -58,7 +80,7 @@
             text-decoration: none;
             font-weight: 500;
             font-size: 0.95rem;
-            border-radius: 8px; /* Bucu bulat moden */
+            border-radius: 8px;
             transition: all 0.2s ease;
             cursor: pointer;
         }
@@ -66,12 +88,11 @@
         .sidebar a:hover {
             background-color: #1e293b;
             color: #ffffff;
-            transform: translateX(4px); /* Efek gerak sedikit ke kanan bila hover */
+            transform: translateX(4px);
         }
 
-        /* Menu Aktif */
         .sidebar a.active {
-            background-color: #3b82f6; /* Warna biru moden */
+            background-color: #3b82f6;
             color: #ffffff;
             box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
         }
@@ -87,7 +108,7 @@
         /* --- TOP BAR --- */
         .topbar {
             background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px); /* Kesan kaca lutsinar sikit */
+            backdrop-filter: blur(8px);
             padding: 0 24px;
             display: flex;
             align-items: center;
@@ -97,37 +118,26 @@
             z-index: 10;
         }
 
-        /* --- BUTANG HAMBURGER & ANIMASI X --- */
+        /* --- BUTANG HAMBURGER BARU --- */
         .hamburger-btn {
-            background: none;
-            border: none;
+            background-color: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #0f172a;
+            border-radius: 8px;
             cursor: pointer;
-            display: none;
-            width: 24px;
-            height: 18px;
-            position: relative;
-            margin-right: 20px;
+            display: none; /* Sembunyi di desktop */
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            margin-right: 16px;
             padding: 0;
-            z-index: 1001;
+            transition: all 0.2s ease;
         }
 
-        .hamburger-btn .bar {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: #0f172a;
-            border-radius: 4px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .hamburger-btn:hover {
+            background-color: #e2e8f0;
         }
-
-        .hamburger-btn .bar:nth-child(1) { top: 0; }
-        .hamburger-btn .bar:nth-child(2) { top: 50%; transform: translateY(-50%); }
-        .hamburger-btn .bar:nth-child(3) { bottom: 0; }
-
-        .hamburger-btn.open .bar:nth-child(1) { top: 50%; transform: translateY(-50%) rotate(45deg); }
-        .hamburger-btn.open .bar:nth-child(2) { opacity: 0; }
-        .hamburger-btn.open .bar:nth-child(3) { bottom: 50%; transform: translateY(50%) rotate(-45deg); }
 
         .topbar-title {
             font-weight: 600;
@@ -151,7 +161,7 @@
             display: block;
         }
 
-        /* --- CSS UNTUK SPINNING LOADER MODEN --- */
+        /* --- CSS UNTUK SPINNING LOADER --- */
         .loader-overlay {
             position: absolute;
             top: 0;
@@ -159,7 +169,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(248, 250, 252, 0.7); 
-            backdrop-filter: blur(4px); /* Kesan blur pada background belakang loader */
+            backdrop-filter: blur(4px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -171,7 +181,7 @@
             width: 44px;
             height: 44px;
             border: 4px solid #e2e8f0;
-            border-top: 4px solid #3b82f6; /* Warna pusingan biru moden */
+            border-top: 4px solid #3b82f6;
             border-radius: 50%;
             animation: spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
         }
@@ -189,9 +199,19 @@
 
         /* --- RESPONSIVE MOBILE VIEW --- */
         @media (max-width: 768px) {
-            .hamburger-btn { display: block; }
-            .sidebar { position: absolute; height: 100%; transform: translateX(-100%); }
-            .sidebar.show { transform: translateX(0); }
+            .hamburger-btn { display: flex; } /* Munculkan butang hamburger */
+            .close-sidebar-btn { display: flex; align-items: center; justify-content: center; } /* Munculkan butang X */
+            
+            .sidebar { 
+                position: absolute; 
+                height: 100%; 
+                transform: translateX(-100%);
+                box-shadow: none;
+            }
+            .sidebar.show { 
+                transform: translateX(0); 
+                box-shadow: 10px 0 25px rgba(0,0,0,0.5); /* Bayang lebih gelap bila sidebar terbuka */
+            }
             .topbar-title { font-size: 1rem; }
         }
     </style>
@@ -199,7 +219,15 @@
 <body>
 
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">Menu Sistem</div>
+        <div class="sidebar-header">
+            <span class="sidebar-title">Menu Sistem</span>
+            <button class="close-sidebar-btn" id="close-sidebar-btn" aria-label="Tutup Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
         <div class="sidebar-menu">
             <a class="nav-link active" data-url="https://script.google.com/macros/s/AKfycbzoy7ayiozPs_rhX8XeV_6P5ciRGJOa4KO4hgYxwu6f5FwikEUYoYXx2uZzgGGRly3ROg/exec" data-title="Laman Utama">Laman Utama</a>
             <a class="nav-link" data-url="https://script.google.com/macros/s/AKfycbyyQytwWXbMmGb_oXXX5tKGVUUQwPJ1wdDPwZKRH5gO3ViRCMzgrwtZmKIfySrL7Hht/exec" data-title="Pelaporan dan Aktiviti">Pelaporan dan Aktiviti</a>
@@ -209,10 +237,12 @@
 
     <div class="main-content">
         <div class="topbar">
-            <button class="hamburger-btn" id="hamburger-btn">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+            <button class="hamburger-btn" id="hamburger-btn" aria-label="Buka Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
             </button>
             <span class="topbar-title" id="topbar-title">Laman Utama</span>
         </div>
@@ -228,35 +258,39 @@
 
     <script>
         const hamburgerBtn = document.getElementById('hamburger-btn');
+        const closeSidebarBtn = document.getElementById('close-sidebar-btn');
         const sidebar = document.getElementById('sidebar');
         const iframe = document.getElementById('main-iframe');
         const topbarTitle = document.getElementById('topbar-title');
         const menuLinks = document.querySelectorAll('.nav-link');
         const loader = document.getElementById('loader');
 
-        // 1. Tutup Loader apabila iframe selesai
+        // 1. Tutup Loader apabila iframe selesai dimuatkan
         iframe.addEventListener('load', () => {
             loader.classList.add('hidden');
         });
 
-        // 2. Buka/Tutup Hamburger Menu
+        // 2. Buka Sidebar (Klik pada Hamburger)
         hamburgerBtn.addEventListener('click', (event) => {
-            sidebar.classList.toggle('show');
-            hamburgerBtn.classList.toggle('open');
+            sidebar.classList.add('show');
             event.stopPropagation();
         });
 
-        // 3. Tutup menu bila klik luar sidebar (mobile)
+        // 3. Tutup Sidebar (Klik pada butang X di dalam menu)
+        closeSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.remove('show');
+        });
+
+        // 4. Tutup menu automatik bila klik luar sidebar
         window.addEventListener('click', (event) => {
             if (window.innerWidth <= 768) {
                 if (sidebar.classList.contains('show') && !sidebar.contains(event.target)) {
                     sidebar.classList.remove('show');
-                    hamburgerBtn.classList.remove('open');
                 }
             }
         });
 
-        // 4. Navigasi Dinamik
+        // 5. Navigasi Dinamik (Tukar pautan dan paparan tajuk)
         menuLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 const newUrl = link.getAttribute('data-url');
@@ -272,9 +306,9 @@
                 menuLinks.forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
 
+                // Auto-tutup sidebar selepas menu ditekan
                 if (window.innerWidth <= 768) {
                     sidebar.classList.remove('show');
-                    hamburgerBtn.classList.remove('open');
                 }
             });
         });
